@@ -17,14 +17,16 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install -g newman newman-reporter-htmlextra
-          npm install express
+          npm install -g newman newman-reporter-htmlextra wait-on
+          # Хэрэв танд package.json байгаа бол 'npm install' хийхэд хангалттай
+          npm install express 
 
       - name: Start mock server
         run: |
           node server/index.js &
-          sleep 2
-          echo "Mock server started"
+          # Сервер 3000 порт дээр бүрэн асаж хариу өгтөл нь хүлээнэ
+          wait-on http://localhost:3000
+          echo "Mock server is up and running!"
 
       - name: Run API tests
         run: |
@@ -37,7 +39,7 @@ jobs:
             --reporter-htmlextra-title "F.CSM311 Lab14 — API Test Report" \
             --reporter-htmlextra-darkTheme
 
-      - name: Upload тестийн тайлан
+      - name: Upload Test Report
         uses: actions/upload-artifact@v4
         if: always()
         with:
